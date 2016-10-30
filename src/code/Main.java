@@ -17,19 +17,21 @@ public class Main {
 
     public static void main(String[] args) throws Exception {
         // Test to ensure file is being read
-        String response = readFile("src/html/index.html", Charset.defaultCharset());
-        System.out.println(response);
+//        String response = readFile("src/html/index.html", Charset.defaultCharset());
+//        System.out.println(response);
+
+        String indexName = "backup";
 
 
         HttpServer server = HttpServer.create(new InetSocketAddress(8000), 0);
-        server.createContext("/backup", new MyHandler());
+        server.createContext("/" + indexName, new MyHandler());
         server.setExecutor(null); // creates a default executor
         server.start();
 
 
         // Launch tab or window
         if (Desktop.isDesktopSupported()) {
-            Desktop.getDesktop().browse(new URI("http://localhost:8000/backup"));
+            Desktop.getDesktop().browse(new URI("http://localhost:8000/" + indexName));
         }
     }
 
@@ -37,12 +39,29 @@ public class Main {
         @Override
         public void handle(HttpExchange t) throws IOException {
 
+            //test
+            String response2 = readFile("src/css/index.css", Charset.defaultCharset());
+
+            t.sendResponseHeaders(200, response2.length());
+            OutputStream os2 = t.getResponseBody();
+            os2.write(response2.getBytes());
+            os2.close();
+
+
+
+
             String response = readFile("src/html/index.html", Charset.defaultCharset());
 
             t.sendResponseHeaders(200, response.length());
             OutputStream os = t.getResponseBody();
             os.write(response.getBytes());
             os.close();
+
+
+
+
+
+
         }
     }
 
