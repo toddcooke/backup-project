@@ -3,12 +3,10 @@ import sqlite3
 from bottle import route, run, debug, template, request, static_file, error
 
 
-# only needed when you run Bottle on mod_wsgi
-
-
 @route('/static/<filename>')
 def server_static(filename):
-    return static_file(filename, root='/static')
+    return static_file(filename, root='static')
+
 
 @route('/')
 def main_page():
@@ -18,7 +16,7 @@ def main_page():
     result = c.fetchall()
     c.close()
 
-    return template('body', rows=result)
+    return template('body', rows=result, get_url='get_url')
 
 
 @route('/todo')
