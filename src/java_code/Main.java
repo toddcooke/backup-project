@@ -1,4 +1,4 @@
-package code;
+package java_code;
 
 import com.sun.net.httpserver.HttpExchange;
 import com.sun.net.httpserver.HttpHandler;
@@ -40,14 +40,12 @@ public class Main {
         public void handle(HttpExchange t) throws IOException {
 
             //test
-            String response2 = readFile("src/css/index.css", Charset.defaultCharset());
+            String response2 = readFile("src/html/index.html", Charset.defaultCharset());
 
             t.sendResponseHeaders(200, response2.length());
             OutputStream os2 = t.getResponseBody();
             os2.write(response2.getBytes());
             os2.close();
-
-
 
 
             String response = readFile("src/html/index.html", Charset.defaultCharset());
@@ -56,10 +54,6 @@ public class Main {
             OutputStream os = t.getResponseBody();
             os.write(response.getBytes());
             os.close();
-
-
-
-
 
 
         }
