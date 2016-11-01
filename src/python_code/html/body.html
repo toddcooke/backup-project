@@ -1,0 +1,37 @@
+% include('html/header.html')
+
+
+<div class="jumbotron">
+    <div class="container">
+        <h1>Backups!</h1>
+        <p>Select a mode then choose options for that mode.</p>
+    </div>
+</div>
+
+<div class="container">
+    <div class="row">
+        <div class="col-md-4">
+            <h2>Create Backup</h2>
+            <p>
+            <form>
+            <p>Enter path to file or directory to backup:</p>
+                <input  name="file_path" type="text" title="file_path">
+            <input type="submit">
+
+            </form>
+            </p>
+            <p><a class="btn btn-default" href="#" role="button">View details &raquo;</a></p>
+        </div>
+        <div class="col-md-4">
+            <h2>Create Recovery Media</h2>
+            <p></p>
+            <p><a class="btn btn-default" href="#" role="button">View details &raquo;</a></p>
+        </div>
+        <div class="col-md-4">
+            <h2>Restore Backup</h2>
+            <p></p>
+            <p><a class="btn btn-default" href="#" role="button">View details &raquo;</a></p>
+        </div>
+    </div>
+
+    % include('html/footer.html')

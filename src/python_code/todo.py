@@ -10,13 +10,7 @@ def server_static(filename):
 
 @route('/')
 def main_page():
-    conn = sqlite3.connect('todo.db')
-    c = conn.cursor()
-    c.execute("SELECT id, task FROM todo WHERE status LIKE '1'")
-    result = c.fetchall()
-    c.close()
-
-    return template('body', rows=result, get_url='get_url')
+    return template('html/body')
 
 
 @route('/todo')
@@ -121,6 +115,6 @@ def mistake404(code):
 
 
 debug(True)
-run(reloader=True)
+run()
 # remember to remove reloader=True and debug(True) when you move your
 # application from development to a productive environment
