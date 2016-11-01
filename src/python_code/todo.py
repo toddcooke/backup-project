@@ -1,6 +1,17 @@
+import os
+import shutil
 import sqlite3
 
 from bottle import route, run, debug, template, request, static_file, error
+
+
+def database_query(command,):
+    conn = sqlite3.connect('todo.db')
+    c = conn.cursor()
+    c.execute("SELECT id, task FROM todo WHERE status LIKE '1'")
+    result = c.fetchall()
+    c.close()
+    return result
 
 
 @route('/static/<filename>')
@@ -11,6 +22,27 @@ def server_static(filename):
 @route('/')
 def main_page():
     return template('html/body')
+
+
+@route('/create_backup', method='GET')
+def new_item():
+    if request.GET:
+
+        path = request.GET.file_path.strip()
+        filename = os.path.basename(path)
+
+        # Backup and make entry in DB
+        if os.path.exists(path):
+            # note: not sure if copy2 can copy directories...
+            shutil.copy2(path, 'backup_repository' + os.path.pathsep + filename)
+
+
+        # Return to body with error message
+        else:
+            pass
+
+    else:
+        return template('html/body')
 
 
 @route('/todo')
