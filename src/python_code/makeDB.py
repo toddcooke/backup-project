@@ -4,8 +4,8 @@ import sqlite3
 con = sqlite3.connect('backup_info.db')
 
 con.execute("""
-CREATE TABLE backup_info
-(id INTEGER PRIMARY KEY,
+CREATE TABLE backup_info(
+id INTEGER PRIMARY KEY,
 action TEXT NOT NULL,
 item TEXT NOT NULL,
 date TEXT NOT NULL,
@@ -13,8 +13,6 @@ time TEXT NOT NULL,
 present BOOLEAN NOT NULL
 )""")
 
-con.execute("INSERT INTO backup_info VALUES (NULL ,)")
-
-
+con.execute("INSERT INTO backup_info VALUES (NULL)")
 
 con.commit()

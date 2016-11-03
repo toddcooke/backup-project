@@ -18,15 +18,20 @@
 <div class="container">
     <div class="row">
         <div class="col-md-4">
-            <h2>Create Backup</h2>
-            <p>
+            <h2>Create Regular Backup</h2>
             <form action="create_backup">
-            <p>Enter path to file or directory to backup:</p>
-                <input  name="file_path" type="text" title="file_path">
-            <input type="submit">
+                <p>Enter start date and time for recurring backup.</p>
+                <input type="datetime-local"
+                       name="datetime_of_reg_bup"
+                       title="datetime"
+                       max="2099-12-31"
+                       required="required">
+
+                <p>Enter path to file or directory to backup:</p>
+                <input name="file_path" type="text" title="file_path" required="required">
+                <input type="submit">
 
             </form>
-            </p>
             <!--<p><a class="btn btn-default" href="#" role="button">View details &raquo;</a></p>-->
         </div>
         <div class="col-md-4">
@@ -41,4 +46,9 @@
         </div>
     </div>
 
-    % include('html/footer.html')
+    <hr>
+    <footer>
+        <p>&copy; 2016 Atlas Backup, Inc.</p>
+    </footer>
+</div>
+% include('html/footer.html')

@@ -1,6 +1,7 @@
 import os
 import shutil
 import sqlite3
+from sqlite3 import OperationalError
 
 from bottle import route, run, debug, template, request, static_file, error
 
@@ -8,19 +9,15 @@ db_name = 'backup_info'
 backup_repository = 'backup_repository'
 
 
-def database_select(command, ):
+def database_query(query):
     conn = sqlite3.connect(db_name + '.db')
     c = conn.cursor()
-    c.execute("SELECT id, task FROM {} WHERE status LIKE '1'".format(db_name))
-    result = c.fetchall()
-    c.close()
-    return result
 
+    try:
+        c.execute(query)
+    except OperationalError as e:
+        return ['error', 'Query returned an error: ', e]
 
-def database_insert(entry):
-    conn = sqlite3.connect(db_name + '.db')
-    c = conn.cursor()
-    c.execute("INSERT INTO {} VALUES (?,?,?,?,?)".format(db_name), (entry, 1))
     result = c.fetchall()
     c.close()
     return result
@@ -38,9 +35,6 @@ def main_page():
 
 @route('/create_backup', method='GET')
 def new_item():
-    if not request.GET.file_path:
-        return template('html/body', msg='Error: file_path key must exist in this route')
-
     path = request.GET.file_path.strip()
     # Backup and make entry in DB
     if os.path.exists(path):
@@ -48,13 +42,15 @@ def new_item():
             shutil.copy2(path, backup_repository + os.path.sep)
         else:
             shutil.copytree(path, backup_repository + os.path.sep + os.path.basename(path))
-        # todo create db entry with file info
+            # todo create db entry with file info
+            # database_query('INSERT INTO {} VALUES ({},{},{},{},{})'.format(db_name))
         return template('html/body', msg='Item backed up successfully.')
     # Return to body with error message
     else:
         return template('html/body', msg='Error: The path specified was invalid.')
 
 
+# Code below kept only for example
 @route('/todo')
 def todo_list():
     conn = sqlite3.connect('backup_info.db')
