@@ -55,30 +55,19 @@
 <div class="jumbotron">
     <div class="container">
 
+
+        <font color = #ff7043><h1 style ="text-align:center;"> <b>Ultra Cool Backup Clint</h1></font></b>
+
+
         <ul>
             <li><a href="#file">File</a></li>
             <li><a href="#edit">Edit</a></li>
             <li><a href="#view">View</a></li>
             <li><a href="#help">Help</a></li>
         </ul><br>
-        <ul>
-            <li><a href = "Backup.html">Backup </a></li><br><Br><br>
-            <form action="">
-        </ul>
 
-        <td><input type="checkbox" name="local backup" value="Local Backup">Local Backup</td><br>
-        <td><input type="checkbox" name="Network" value="Network Backup">Network Backup</td><br>
-        <td><input type="checkbox" name="incremental " value="Incremental Backup">Incremental Backup</td><br>
-        <td><input type="checkbox" name="full backup" value="Full Backup">Full Backup</td><td><br>
-        <td><input type="checkbox" name="archiveal" value="Archival Backup">Archival Backup</td>
+    </div>
 
-        </form>
-
-        <h1>Hello, world!</h1>
-        <p>This is a template for a simple marketing or informational website. It includes a large callout called a
-            jumbotron and three supporting pieces of content. Use it as a starting point to create something more
-            unique.</p>
-        <p><a class="btn btn-primary btn-lg" href="#" role="button">Learn more &raquo;</a></p>
     </div>
 </div>
 
@@ -86,31 +75,112 @@
     <!-- Example row of columns -->
     <div class="row">
         <div class="col-md-4">
-            <h2>Heading</h2>
-            <p>Donec id elit non mi porta gravida at eget metus. Fusce dapibus, tellus ac cursus commodo, tortor mauris
-                condimentum nibh, ut fermentum massa justo sit amet risus. Etiam porta sem malesuada magna mollis
-                euismod. Donec sed odio dui. </p>
-            <p><a class="btn btn-default" href="#" role="button">View details &raquo;</a></p>
+
+
+            <ul>
+                <li><a href = "Backup.html">Backup </a></li><br><Br><br>
+                <form action="">
+            </ul>
+            <select><br>
+                <option value="select">Select </option>
+                <option value="local backup">Local Backup</option>
+                <option value="network">Network Backup</option>
+                <option value="incremental">Incremental Backup</option>
+                <option value="fullbackup">Full Backup</option>
+                <option value="archival">Archival Backup</option>
+            </select>
+
         </div>
         <div class="col-md-4">
-            <h2>Heading</h2>
-            <p>Donec id elit non mi porta gravida at eget metus. Fusce dapibus, tellus ac cursus commodo, tortor mauris
-                condimentum nibh, ut fermentum massa justo sit amet risus. Etiam porta sem malesuada magna mollis
-                euismod. Donec sed odio dui. </p>
-            <p><a class="btn btn-default" href="#" role="button">View details &raquo;</a></p>
+
+            <table>
+            <ul>
+                <li><a href = "Backup.html">Recovary Media </a></li><br><Br><br>
+
+            </ul>
+                <form action="">
+            <select><br>
+                <option value="select">Select </option>
+                <option value="local backup">Local Backup</option>
+                <option value="network">Network Backup</option>
+                <option value="incremental">Incremental Backup</option>
+                <option value="fullbackup">Full Backup</option>
+                <option value="archival">Archival Backup</option>
+            </select>
+                <br><br>
+            <table align="right" width=10% height="30%" border=1>
+                <tr>
+                    <td valign=”top”><h2>Files to be blocked up</td></h2>
+                </tr>
+
+                <td valign=”top”><h4>Files1</h4></td>
+                <tr>
+                    <td valign=”top”><h4>Files2</h4></td></tr>
+                <tr>
+                    <td valign=”top”><h4>Files3</h4></td></tr></h4>
+
+            </table></table>
+
+            <button type="choose files" value="Choose Files">Choose Selection</button>
+
+            <button type="Clear Selection" value="Clear slection">Clear Selection</button>
+
+
         </div>
         <div class="col-md-4">
-            <h2>Heading</h2>
-            <p>Donec sed odio dui. Cras justo odio, dapibus ac facilisis in, egestas eget quam. Vestibulum id ligula
-                porta felis euismod semper. Fusce dapibus, tellus ac cursus commodo, tortor mauris condimentum nibh, ut
-                fermentum massa justo sit amet risus.</p>
-            <p><a class="btn btn-default" href="#" role="button">View details &raquo;</a></p>
+
+
+            <ul>
+                <li><a href = "Backup.html">Restore </a></li><br><Br><br>
+                <form action="">
+            </ul>
+            <select><br>
+                <option value="select">Select </option>
+                <option value="local backup">Local Backup</option>
+                <option value="network">Network Backup</option>
+                <option value="incremental">Incremental Backup</option>
+                <option value="fullbackup">Full Backup</option>
+                <option value="archival">Archival Backup</option>
+            </select>
+
+
+            <form action="action_page.php"><br><br>
+                <h3>&nbsp;&nbsp;&nbsp;&nbsp;Enter a Date want to Backup <br></h3>
+                &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<input type="date" name="bday" max="2020-12-31"><br><br>
+                &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<input type="Submit"><br><br>
+            </form>
+
+
+
         </div>
+        <br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br>
+        <form action="">
+            <input type="radio" name="compressed" value="compressed"> Compressed<br>
+            <input type="radio" name="encrypted" value="encrypted"> Encrypted<br>
+
+        </form>
+
+
+    </div>
     </div>
 
     <hr>
 
     <footer>
+        <footer><br>
+
+
+           <h4> <input type="submit" value="Submit">
+
+            <button type="reset" value="Reset">Reset</button></h4>
+
+
+
+
+            <br><br><br>
+            <a href="#top" style="text-shadow:#e7cd88 0 1px 2px; font-size:16px;"> Back to Top</a>
+
+        </footer>
         <p>&copy; 2016 Company, Inc.</p>
     </footer>
 </div>
