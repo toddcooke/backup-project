@@ -30,7 +30,7 @@ def server_static(filename):
 
 @route('/')
 def main_page():
-    return template('html/body', msg='')
+    return template('html/index', msg='')
 
 
 @route('/create_backup', method='GET')
@@ -49,10 +49,10 @@ def new_item():
             shutil.copytree(path, backup_repository + os.path.sep + os.path.basename(path))
             # database_query('INSERT INTO {} VALUES ({},{},{},{},{})'
             #                .format(db_name,None,path,request.GET.))
-        return template('html/body', msg='Item backed up successfully.')
+        return template('html/index', msg='Item backed up successfully.')
     # Return to body with error message
     else:
-        return template('html/body', msg='Error: The path specified was invalid.')
+        return template('html/index', msg='Error: The path specified was invalid.')
 
 
 # Code below kept only for example
