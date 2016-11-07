@@ -36,14 +36,19 @@ def main_page():
 @route('/create_backup', method='GET')
 def new_item():
     path = request.GET.file_path.strip()
+    days = ['sun', 'mon', 'tue', 'wed', 'thu', 'fri', 'sat']
+
+    # If no checkboxes are checked
+    # if not request.GET.
+
     # Backup and make entry in DB
     if os.path.exists(path):
         if os.path.isfile(path):
             shutil.copy2(path, backup_repository + os.path.sep)
         else:
             shutil.copytree(path, backup_repository + os.path.sep + os.path.basename(path))
-            # todo create db entry with file info
-            # database_query('INSERT INTO {} VALUES ({},{},{},{},{})'.format(db_name))
+            # database_query('INSERT INTO {} VALUES ({},{},{},{},{})'
+            #                .format(db_name,None,path,request.GET.))
         return template('html/body', msg='Item backed up successfully.')
     # Return to body with error message
     else:

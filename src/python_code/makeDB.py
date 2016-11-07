@@ -6,13 +6,13 @@ con = sqlite3.connect('backup_info.db')
 con.execute("""
 CREATE TABLE backup_info(
 id INTEGER PRIMARY KEY,
-action TEXT NOT NULL,
-item TEXT NOT NULL,
+path TEXT NOT NULL,
 date TEXT NOT NULL,
 time TEXT NOT NULL,
-present BOOLEAN NOT NULL
+mod_time TEXT NOT NULL,
+mod_date TEXT NOT NULL
 )""")
 
-con.execute("INSERT INTO backup_info VALUES (NULL)")
+# con.execute("INSERT INTO backup_info VALUES (NULL)")
 
 con.commit()

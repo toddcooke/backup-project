@@ -20,16 +20,34 @@
         <div class="col-md-4">
             <h2>Create Regular Backup</h2>
             <form action="create_backup">
-                <p>Enter start date and time for recurring backup.</p>
-                <input type="datetime-local"
-                       name="datetime_of_reg_bup"
-                       title="datetime"
-                       max="2099-12-31"
-                       required="required">
 
-                <p>Enter path to file or directory to backup:</p>
-                <input name="file_path" type="text" title="file_path" required="required">
-                <input type="submit">
+                <div class="form-group" id="dow">
+                    <p>How often should the backup run?</p>
+                    <label><input type="checkbox" name="sun"> Sunday</label>
+                    <label><input type="checkbox" name="mon"> Monday</label>
+                    <label><input type="checkbox" name="tue"> Tuesday</label>
+                    <label><input type="checkbox" name="wed"> Wednesday</label>
+                    <label><input type="checkbox" name="thu"> Thursday</label>
+                    <label><input type="checkbox" name="fri"> Friday</label>
+                    <label><input type="checkbox" name="sat"> Saturday</label>
+                </div>
+
+
+                <div class="form-group">
+                    <!--<p>Enter start date and time for recurring backup.</p>-->
+                    <!--<input type="date" name="date" title="date" max="2099-12-31" required="required">-->
+
+                    <p>At what time?</p>
+                    <input type="time" name="time" title="time">
+
+                </div>
+
+
+                <div class="form-group">
+                    <p>Enter path to file or directory to backup:</p>
+                    <input name="file_path" type="text" title="file_path">
+                    <input type="submit" id="reg_bup_submit"></div>
+
 
             </form>
             <!--<p><a class="btn btn-default" href="#" role="button">View details &raquo;</a></p>-->
