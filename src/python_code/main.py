@@ -32,9 +32,19 @@ def main_page():
     return template('html/index', msg='')
 
 
-@route('/create_recovery_media')
-def main_page():
-    return template('html/create_recovery_media', msg='')
+@route('/regular_backup')
+def regular_backup():
+    return template('html/regular_backup', msg='')
+
+
+@route('/restore_backup')
+def regular_backup():
+    return template('html/restore_backup', msg='')
+
+
+@route('/recovery_media')
+def regular_backup():
+    return template('html/recovery_media', msg='')
 
 
 @route('/create_backup', method='GET')

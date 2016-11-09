@@ -2,44 +2,6 @@
 
 <div class="container">
     <div class="row">
-        <div class="col-md-4 create_regular_backup">
-            <h2>Create Regular Backup</h2>
-            <form action="create_backup">
-                <div class="form-group">
-                    <p>How often to backup?</p>
-                    <select class="form-control" id="freq_select" name="select" title="weekly_monthly_yearly">
-                        <option id="weekly" value="weekly">Weekly</option>
-                        <option value="monthly">Monthly</option>
-                        <option value="yearly">Yearly</option>
-                    </select>
-                </div>
-                <div class="form-group" id="dow">
-                    <p>What day(s) of the week should the backup run?</p>
-                    <div class="checkbox">
-                        <label><input type="checkbox" name="sun"> Sunday</label>
-                        <label><input type="checkbox" name="mon"> Monday</label>
-                        <label><input type="checkbox" name="tue"> Tuesday</label>
-                        <label><input type="checkbox" name="wed"> Wednesday</label>
-                        <label><input type="checkbox" name="thu"> Thursday</label>
-                        <label><input type="checkbox" name="fri"> Friday</label>
-                        <label><input type="checkbox" name="sat"> Saturday</label>
-                    </div>
-                </div>
-                <div class="form-group">
-                    <p>At what time?</p>
-                    <input class="form-control" type="time" name="time" title="time" required="required">
-                </div>
-                <div class="form-group">
-                    <p>Enter path to file or directory to backup:</p>
-                    <input class="form-control" name="file_path" type="text" title="file_path">
-                </div>
-                <button type="submit" class="btn btn-primary" id="reg_bup_submit">Submit</button>
-            </form>
-        </div>
-        <div class="col-md-4">
-            <h2>Create Recovery Media</h2>
-            <p></p>
-        </div>
         <div class="col-md-4">
             <h2>Restore Backup</h2>
             <p></p>
