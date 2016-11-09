@@ -3,16 +3,9 @@
 <div class="container">
     <div class="row">
         <div class="col-md-4 create_regular_backup">
-            <h2>Create Regular Backup</h2>
-            <form action="create_backup">
-                <div class="form-group">
-                    <p>How often to backup?</p>
-                    <select class="form-control" id="freq_select" name="select" title="weekly_monthly_yearly">
-                        <option id="weekly" value="weekly">Weekly</option>
-                        <option value="monthly">Monthly</option>
-                        <option value="yearly">Yearly</option>
-                    </select>
-                </div>
+            <h2>Create Regular Weekly Backup</h2>
+
+            <form action="schedule_weekly_backup">
                 <div class="form-group" id="dow">
                     <p>What day(s) of the week should the backup run?</p>
                     <div class="checkbox">

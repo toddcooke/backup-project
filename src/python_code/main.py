@@ -8,6 +8,21 @@ db_name = 'backup_info'
 backup_repository = 'backup_repository'
 
 
+@route('/static/<filename>')
+def server_static(filename):
+    return static_file(filename, root='static')
+
+
+@route('/')
+def main_page():
+    return template('html/index', msg='')
+
+
+@route('/<item>.html')
+def regular_backup(item):
+    return template('html/{}'.format(item), msg='')
+
+
 def database_query(query):
     conn = sqlite3.connect(db_name + '.db')
     c = conn.cursor()
@@ -22,33 +37,8 @@ def database_query(query):
     return result
 
 
-@route('/static/<filename>')
-def server_static(filename):
-    return static_file(filename, root='static')
-
-
-@route('/')
-def main_page():
-    return template('html/index', msg='')
-
-
-@route('/regular_backup')
-def regular_backup():
-    return template('html/regular_backup', msg='')
-
-
-@route('/restore_backup')
-def regular_backup():
-    return template('html/restore_backup', msg='')
-
-
-@route('/recovery_media')
-def regular_backup():
-    return template('html/recovery_media', msg='')
-
-
-@route('/create_backup', method='GET')
-def new_item():
+@route('/schedule_<kind>_backup', method='GET')
+def new_item(kind):
     path = request.GET.file_path.strip()
     days = ['sun', 'mon', 'tue', 'wed', 'thu', 'fri', 'sat']
 
@@ -60,10 +50,10 @@ def new_item():
             shutil.copytree(path, backup_repository + os.path.sep + os.path.basename(path))
             # database_query('INSERT INTO {} VALUES ({},{},{},{},{})'
             #                .format(db_name,None,path,request.GET.))
-        return template('html/regular_backup', msg='Item backed up successfully.')
+        return template('html/schedule_{}_backup'.format(kind), msg='Item backed up successfully.')
     # Return to body with error message
     else:
-        return template('html/regular_backup', msg='Error: The path specified was invalid.')
+        return template('html/regular_{}_backup'.format(kind), msg='Error: The path specified was invalid.')
 
 
 @error(404)

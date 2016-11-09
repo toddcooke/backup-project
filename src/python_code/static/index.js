@@ -4,10 +4,11 @@ $('#reg_bup_submit').click(function () {
     }
 });
 
-$('#freq_select').change(function () {
-    // alert($('#freq_select option:selected').text());
-    var option = $('#freq_select').find('option:selected').text();
-    if (option == 'Weekly'){
-        $('.create_regular_backup ')
-    }
-});
+// $('#freq_select').change(function () {
+//     // alert($('#freq_select option:selected').text());
+//     var option = $('#freq_select').find('option:selected').text();
+//     if (option == 'Weekly') {
+//         // $('.create_regular_backup ')
+//         alert($('#freq_select option:selected').text());
+//     }
+// });
