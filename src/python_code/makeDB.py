@@ -17,6 +17,7 @@ time TEXT NOT NULL
 con.execute("""
 CREATE TABLE backup_schedule(
 bup_id INTEGER NOT NULL,
+path TEXT NOT NULL,
 day_of_week TEXT NOT NULL,
 time TEXT NOT NULL,
 weekly BOOLEAN NOT NULL,
