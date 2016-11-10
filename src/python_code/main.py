@@ -2,7 +2,7 @@ import os
 import shutil
 import sqlite3
 from sqlite3 import OperationalError
-from bottle import route, run, debug, template, request, static_file, error
+from bottle import route, run, template, request, static_file, error
 
 db_name = 'backup_info'
 backup_repository = 'backup_repository'
@@ -17,6 +17,19 @@ def server_static(filename):
 @route('/')
 def main_page():
     return template('html/index', msg='')
+
+
+@route('/restore_backup.html', method='GET')
+def restore_backup():
+    path = request.GET.file_path.strip()
+
+    if not path:
+        return template('html/restore_backup', msg='')
+
+    select = database_query("select * from {}".format(backup_schedule))
+    # if select[0] == 'error':
+    #     return template('html/restore_backup', msg='Error: ' + select[-1])
+    return template('html/restore_backup', msg=select)
 
 
 @route('/<item>.html')
@@ -65,5 +78,4 @@ def mistake404(code):
 
 
 # Start bottle server with debugging enabled
-debug(True)
-run()
+run(debug=True)
