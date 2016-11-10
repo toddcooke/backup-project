@@ -6,6 +6,7 @@ from bottle import route, run, debug, template, request, static_file, error
 
 db_name = 'backup_info'
 backup_repository = 'backup_repository'
+backup_schedule = 'backup_schedule'
 
 
 @route('/static/<filename>')
@@ -37,23 +38,25 @@ def database_query(query):
     return result
 
 
+def copy_item_to_repo(item):
+    if os.path.isfile(item):
+        shutil.copy2(item, backup_repository + os.path.sep)
+    else:
+        shutil.copytree(item, backup_repository + os.path.sep + os.path.basename(item))
+
+
 @route('/schedule_<kind>_backup', method='GET')
 def new_item(kind):
     path = request.GET.file_path.strip()
-    days = ['sun', 'mon', 'tue', 'wed', 'thu', 'fri', 'sat']
+    # days = ['sun', 'mon', 'tue', 'wed', 'thu', 'fri', 'sat']
 
     # Backup and make entry in DB
     if os.path.exists(path):
-        if os.path.isfile(path):
-            shutil.copy2(path, backup_repository + os.path.sep)
-        else:
-            shutil.copytree(path, backup_repository + os.path.sep + os.path.basename(path))
-            # database_query('INSERT INTO {} VALUES ({},{},{},{},{})'
-            #                .format(db_name,None,path,request.GET.))
+        # database_query('insert into {} VALUES ()')
         return template('html/schedule_{}_backup'.format(kind), msg='Item backed up successfully.')
     # Return to body with error message
     else:
-        return template('html/regular_{}_backup'.format(kind), msg='Error: The path specified was invalid.')
+        return template('html/schedule_{}_backup'.format(kind), msg='Error: The path specified was invalid.')
 
 
 @error(404)

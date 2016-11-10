@@ -9,20 +9,32 @@ CREATE TABLE backup_info(
 id INTEGER PRIMARY KEY,
 bup_id INTEGER NOT NULL,
 path TEXT NOT NULL,
-date TEXT NOT NULL,
-time TEXT NOT NULL
+bup_date TEXT NOT NULL,
+bup_time TEXT NOT NULL
 )""")
 
 # Gets updated when user creates a regular backup
 con.execute("""
 CREATE TABLE backup_schedule(
-bup_id INTEGER NOT NULL,
+bup_id INTEGER PRIMARY KEY,
 path TEXT NOT NULL,
 day_of_week TEXT NOT NULL,
-time TEXT NOT NULL,
+bup_time TEXT NOT NULL,
 weekly BOOLEAN NOT NULL,
 monthly BOOLEAN NOT NULL,
 yearly BOOLEAN NOT NULL
 )""")
 
 con.commit()
+
+
+"""
+insert into backup_schedule values(
+NULL,
+'/home/todd/ok.txt',
+'montue',
+'15:30',
+1,
+0,
+0)
+"""

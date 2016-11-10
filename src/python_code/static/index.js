@@ -1,8 +1,8 @@
-$('#reg_bup_submit').click(function () {
-    if ($('#dow').find(':checkbox:checked').length === 0) {
-        alert('You must select at least one day of the week.')
-    }
-});
+// $('#reg_bup_submit').click(function () {
+//     if ($('#dow').find(':checkbox:checked').length === 0) {
+//         alert('You must select at least one day of the week.')
+//     }
+// });
 
 // $('#freq_select').change(function () {
 //     // alert($('#freq_select option:selected').text());
