@@ -9,7 +9,6 @@ from bottle import route, run, template, request, static_file, error
 db_backup_info = 'backup_info'
 db_backup_schedule = 'backup_schedule'
 backup_repository = 'backup_repository'
-msg_success = 'Item backed up successfully'
 
 
 @route('/static/<filename>')
@@ -28,12 +27,16 @@ def restore_backup():
     conn = sqlite3.connect(db_backup_info + '.db')
     c = conn.cursor()
 
-    c.execute("SELECT * FROM {}".format(db_backup_schedule))
+    c.execute("SELECT * FROM {}".format(db_backup_info))
     select_schedule = c.fetchall()
-    c.close()
+
+    # If backup_info table is empty
+    if not select_schedule:
+        return template('html/restore_backup', msg='Nothing has been backed up yet!', DB_info=select_schedule)
 
     # If user has not hit submit yet
     if not path:
+        c.close()
         return template('html/restore_backup', DB_info=select_schedule)
 
     else:
@@ -44,6 +47,30 @@ def restore_backup():
             return template('html/restore_backup',
                             msg='Error: There are no backups to restore', msg_type='warning', DB_info=select_schedule)
         return template('html/restore_backup', msg=select_schedule, DB_info=select_schedule)
+
+
+# @route('/restore_backup_version.html', method='GET')
+# def restore_backup():
+#     path = request.GET.db_item.strip()
+#     conn = sqlite3.connect(db_backup_info + '.db')
+#     c = conn.cursor()
+#
+#     c.execute("SELECT * FROM {}".format(db_backup_info))
+#     select_schedule = c.fetchall()
+#
+#     # If user has not hit submit yet
+#     if not path:
+#         c.close()
+#         return template('html/restore_backup_version', DB_info=select_schedule)
+#
+#     else:
+#         c.execute("SELECT * FROM {}".format(db_backup_info))
+#         select_schedule = c.fetchall()
+#         c.close()
+#         if not select_schedule:
+#             return template('html/restore_backup', msg='Error: There are no backups to restore',
+#                             msg_type='warning', DB_info=select_schedule)
+#         return template('html/restore_backup', msg=select_schedule, DB_info=select_schedule)
 
 
 @route('/<item>.html')
@@ -76,8 +103,8 @@ def schedule_backup(kind):
             return template('html/schedule_{}_backup'.format(kind),
                             msg='Error: At least one day must be selected.', msg_type='warning')
 
-        c.execute('INSERT INTO {} VALUES (?,?,?,?,?,?,?)'.format(db_backup_schedule),
-                  (None, path, checked_days, request.GET.time.strip(), True, False, False))
+        c.execute('INSERT INTO {} VALUES (?,?,?,?,?)'.format(db_backup_schedule),
+                  (None, path, checked_days, 'weekly', request.GET.time.strip()))
         c.close()
         conn.commit()
 

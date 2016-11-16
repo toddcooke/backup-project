@@ -14,15 +14,14 @@ bup_time TEXT NOT NULL
 )""")
 
 # Gets updated when user creates a regular backup
+# Frequency should be one of weekly, monthly, or yearly
 con.execute("""
 CREATE TABLE IF NOT EXISTS backup_schedule(
 bup_id INTEGER PRIMARY KEY,
 path TEXT NOT NULL,
 day_of_week TEXT NOT NULL,
-bup_time TEXT NOT NULL,
-weekly BOOLEAN NOT NULL,
-monthly BOOLEAN NOT NULL,
-yearly BOOLEAN NOT NULL
+frequency TEXT NOT NULL,
+bup_time TEXT NOT NULL
 )""")
 
 con.commit()
