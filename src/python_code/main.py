@@ -1,3 +1,5 @@
+#!/usr/bin/python
+
 import os
 import shutil
 import sqlite3
@@ -17,47 +19,36 @@ def server_static(filename):
 
 @route('/')
 def main_page():
-    return template('html/index', msg='')
+    return template('html/index')
 
 
 @route('/restore_backup.html', method='GET')
 def restore_backup():
     path = request.GET.file_path.strip()
-
-    # if not path:
-    #     return template('html/restore_backup', msg='')
-
-    select = database_query("select * from {}".format(db_backup_schedule))
-    # if select[0] == 'error':
-    #     return template('html/restore_backup', msg='Error: ' + select[-1])
-    return template('html/restore_backup', msg=select)
-
-
-@route('/<item>.html')
-def regular_backup(item):
-    return template('html/{}'.format(item), msg='')
-
-
-def database_query(query, values):
     conn = sqlite3.connect(db_backup_info + '.db')
     c = conn.cursor()
 
-    TEST = (None,
-            '/home/todd/ok.txt',
-            'montue',
-            '15:30',
-            1,
-            0,
-            0)
-
-    try:
-        c.execute(query, TEST)
-    except OperationalError as e:
-        return ['error', 'Query returned an error: ', e]
-
-    result = c.fetchall()
+    c.execute("SELECT * FROM {}".format(db_backup_schedule))
+    select_schedule = c.fetchall()
     c.close()
-    return result
+
+    # If user has not hit submit yet
+    if not path:
+        return template('html/restore_backup', DB_info=select_schedule)
+
+    else:
+        c.execute("SELECT * FROM {}".format(db_backup_info))
+        select_schedule = c.fetchall()
+        c.close()
+        if not select_schedule:
+            return template('html/restore_backup',
+                            msg='Error: There are no backups to restore', msg_type='warning', DB_info=select_schedule)
+        return template('html/restore_backup', msg=select_schedule, DB_info=select_schedule)
+
+
+@route('/<item>.html')
+def any_html(item):
+    return template('html/{}'.format(item))
 
 
 def copy_item_to_repo(item):
@@ -68,20 +59,30 @@ def copy_item_to_repo(item):
 
 
 @route('/schedule_<kind>_backup', method='GET')
-def new_item(kind):
+def schedule_backup(kind):
     days = ['sun', 'mon', 'tue', 'wed', 'thu', 'fri', 'sat']
     path = request.GET.file_path.strip()
 
+    conn = sqlite3.connect(db_backup_info + '.db')
+    c = conn.cursor()
+
     if not os.path.exists(path):
-        return template('html/schedule_{}_backup'.format(kind), msg='Error: The path specified was invalid.')
+        return template('html/schedule_{}_backup'.format(kind),
+                        msg='Error: The path specified was invalid.', msg_type='warning')
 
     if kind == 'weekly':
         checked_days = '_'.join([i for i in request.query.keys() if i in days])
-        result = database_query('INSERT INTO {} VALUES (?,?,?,?,?,?,?)'.format(db_backup_schedule),
-                                (None, path, checked_days, request.GET.time.strip(),
-                                 True, False, False))
+        if not checked_days:
+            return template('html/schedule_{}_backup'.format(kind),
+                            msg='Error: At least one day must be selected.', msg_type='warning')
 
-        return template('html/schedule_{}_backup'.format(kind), msg=result)
+        c.execute('INSERT INTO {} VALUES (?,?,?,?,?,?,?)'.format(db_backup_schedule),
+                  (None, path, checked_days, request.GET.time.strip(), True, False, False))
+        c.close()
+        conn.commit()
+
+        return template('html/schedule_{}_backup'.format(kind), msg='Successful backup of: ' + path)
+
     elif kind == 'monthly':
         pass
     elif kind == 'custom':
@@ -95,5 +96,6 @@ def mistake404(code):
     return 'Sorry, this page does not exist!'
 
 
-# Start bottle server with debugging enabled
-run(debug=True)
+if __name__ == '__main__':
+    # Start bottle server with debugging enabled
+    run(debug=True)

@@ -6,10 +6,16 @@
             <h2>Restore Backup</h2>
             <hr>
 
-            <form action="restore_backup">
-                <div class="form-group">
+            <form action="restore_backup.html">
+                <div class="form-group" id="dow">
                     <p>Which item to restore?</p>
-                    <input class="form-control" type="time" name="time" title="time" required="required">
+                    {{DB_info}}
+                    <p>Path to item, Day(s) of backup, Time of backup</p>
+                    <div class="checkbox">
+                        % for count, item in enumerate(DB_info):
+                        <label><input type="checkbox" name={{DB_info[count][0]}}>{{', '.join(DB_info[count][1:4])}}</label>
+                        % end
+                    </div>
                 </div>
 
                 <div class="form-group">

@@ -1,18 +1,14 @@
 <div class="container">
     <div class="row">
         <div class="col-md-4">
-            <p>{{msg}}</p>
+            <br>
+            % setdefault('msg_type','info')
+            % if defined('msg'):
+            <div class="alert alert-{{msg_type}}">{{msg}}</div>
+            % end
         </div>
     </div>
 </div>
-
-<!--<div class="container">-->
-    <!--<div class="row">-->
-        <!--<hr>-->
-        <!--<footer><p>&copy; 2016 Atlas Backup, Inc.</p></footer>-->
-    <!--</div>-->
-<!--</div>-->
-
 
 <!-- Placed at the end of the document so the pages load faster -->
 <script src="../static/jquery-2.2.4.min.js"></script>

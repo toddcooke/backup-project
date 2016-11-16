@@ -5,7 +5,7 @@ con = sqlite3.connect('backup_info.db')
 
 # Gets updated when items are inserted into backup_repository
 con.execute("""
-CREATE TABLE backup_info(
+CREATE TABLE IF NOT EXISTS backup_info(
 id INTEGER PRIMARY KEY,
 bup_id INTEGER NOT NULL,
 path TEXT NOT NULL,
@@ -15,7 +15,7 @@ bup_time TEXT NOT NULL
 
 # Gets updated when user creates a regular backup
 con.execute("""
-CREATE TABLE backup_schedule(
+CREATE TABLE IF NOT EXISTS backup_schedule(
 bup_id INTEGER PRIMARY KEY,
 path TEXT NOT NULL,
 day_of_week TEXT NOT NULL,
