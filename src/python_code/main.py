@@ -3,7 +3,6 @@
 import os
 import shutil
 import sqlite3
-from sqlite3 import OperationalError
 from bottle import route, run, template, request, static_file, error
 
 db_backup_info = 'backup_info'
@@ -49,30 +48,6 @@ def restore_backup():
         return template('html/restore_backup', msg=select_schedule, DB_info=select_schedule)
 
 
-# @route('/restore_backup_version.html', method='GET')
-# def restore_backup():
-#     path = request.GET.db_item.strip()
-#     conn = sqlite3.connect(db_backup_info + '.db')
-#     c = conn.cursor()
-#
-#     c.execute("SELECT * FROM {}".format(db_backup_info))
-#     select_schedule = c.fetchall()
-#
-#     # If user has not hit submit yet
-#     if not path:
-#         c.close()
-#         return template('html/restore_backup_version', DB_info=select_schedule)
-#
-#     else:
-#         c.execute("SELECT * FROM {}".format(db_backup_info))
-#         select_schedule = c.fetchall()
-#         c.close()
-#         if not select_schedule:
-#             return template('html/restore_backup', msg='Error: There are no backups to restore',
-#                             msg_type='warning', DB_info=select_schedule)
-#         return template('html/restore_backup', msg=select_schedule, DB_info=select_schedule)
-
-
 @route('/<item>.html')
 def any_html(item):
     return template('html/{}'.format(item))
@@ -85,30 +60,29 @@ def copy_item_to_repo(item):
         shutil.copytree(item, backup_repository + os.path.sep + os.path.basename(item))
 
 
+def copy_item_from_repo(item):
+    pass
+
+
 @route('/schedule_<kind>_backup', method='GET')
 def schedule_backup(kind):
     days = ['sun', 'mon', 'tue', 'wed', 'thu', 'fri', 'sat']
     path = request.GET.file_path.strip()
-
+    result = None
     conn = sqlite3.connect(db_backup_info + '.db')
     c = conn.cursor()
-
-    if not os.path.exists(path):
-        return template('html/schedule_{}_backup'.format(kind),
-                        msg='Error: The path specified was invalid.', msg_type='warning')
 
     if kind == 'weekly':
         checked_days = '_'.join([i for i in request.query.keys() if i in days])
         if not checked_days:
-            return template('html/schedule_{}_backup'.format(kind),
-                            msg='Error: At least one day must be selected.', msg_type='warning')
+            result = template('html/schedule_{}_backup'.format(kind),
+                              msg='Error: At least one day must be selected.', msg_type='warning')
+        else:
+            c.execute('INSERT INTO {} VALUES (?,?,?,?,?)'.format(db_backup_schedule),
+                      (None, path, checked_days, 'weekly', request.GET.time.strip()))
+            conn.commit()
 
-        c.execute('INSERT INTO {} VALUES (?,?,?,?,?)'.format(db_backup_schedule),
-                  (None, path, checked_days, 'weekly', request.GET.time.strip()))
-        c.close()
-        conn.commit()
-
-        return template('html/schedule_{}_backup'.format(kind), msg='Successful backup of: ' + path)
+            result = template('html/schedule_{}_backup'.format(kind), msg='Successful backup of: ' + path)
 
     elif kind == 'monthly':
         pass
@@ -116,6 +90,13 @@ def schedule_backup(kind):
         pass
     else:
         pass
+
+    if not os.path.exists(path):
+        result = template('html/schedule_{}_backup'.format(kind),
+                          msg='Error: The path specified was invalid.', msg_type='warning')
+
+    c.close()
+    return result
 
 
 @error(404)
