@@ -7,12 +7,10 @@ con = sqlite3.connect('backup_info.db')
 con.execute("""
 CREATE TABLE IF NOT EXISTS backup_info(
 id INTEGER PRIMARY KEY,
-bup_id INTEGER,
+bup_id INTEGER NOT NULL,
 path TEXT NOT NULL,
 offset INTEGER NOT NULL,
-bup_time TEXT NOT NULL,
-day_of_week TEXT,
-day_of_month INTEGER
+bup_date TEXT NOT NULL
 )""")
 
 # Gets updated when user creates a regular backup
@@ -22,9 +20,7 @@ CREATE TABLE IF NOT EXISTS backup_schedule(
 bup_id INTEGER PRIMARY KEY,
 path TEXT NOT NULL,
 offset INTEGER NOT NULL,
-bup_time TEXT NOT NULL,
-day_of_week TEXT,
-day_of_month INTEGER
+bup_date TEXT NOT NULL
 )""")
 
 con.commit()

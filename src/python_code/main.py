@@ -3,21 +3,60 @@
 import os
 import shutil
 import sqlite3
+import datetime
 from bottle import route, run, template, request, static_file, error
 
 db_backup_info = 'backup_info'
 db_backup_schedule = 'backup_schedule'
 backup_repository = 'backup_repository'
+date_format = "%m/%d/%Y"
 
 
-@route('/static/<filename>')
-def server_static(filename):
-    return static_file(filename, root='static')
+def str_to_date(s):
+    """
+    :param s: s in format mm/dd/yyyy
+    :return: s in datetime format
+    """
+    return datetime.datetime.strptime(s, date_format)
 
 
-@route('/')
-def main_page():
-    return template('html/index')
+def date_to_str(d):
+    """
+    :param d:
+    :return: d in a string format
+    """
+    return d.strftime(date_format)
+
+
+def add_x_days(d, x):
+    """
+    :param d: datetime object
+    :param x: integer, number of days to increment
+    :return: d incremented by x days
+    """
+    return d + datetime.timedelta(days=x)
+
+
+@route('/schedule_backup', method='GET')
+def schedule_backup():
+    days = ['sun', 'mon', 'tue', 'wed', 'thu', 'fri', 'sat']
+    path = request.GET.file_path.strip()
+    conn = sqlite3.connect(db_backup_info + '.db')
+    c = conn.cursor()
+    req = request.GET
+
+    c.execute('INSERT INTO {} VALUES (?,?,?,?,?)'.format(db_backup_schedule),
+              (None, path, req.offset.strip, 1, req.dom))
+    conn.commit()
+
+    result = template('html/schedule_backup', msg='Successful backup of: ' + path)
+
+    if not os.path.exists(path):
+        result = template('html/schedule_backup',
+                          msg='Error: The path specified was invalid.', msg_type='warning')
+
+    c.close()
+    return result
 
 
 @route('/restore_backup.html', method='GET')
@@ -48,6 +87,16 @@ def restore_backup():
         return template('html/restore_backup', msg=select_schedule, DB_info=select_schedule)
 
 
+@route('/static/<filename>')
+def server_static(filename):
+    return static_file(filename, root='static')
+
+
+@route('/')
+def main_page():
+    return template('html/index')
+
+
 @route('/<item>.html')
 def any_html(item):
     return template('html/{}'.format(item))
@@ -62,41 +111,6 @@ def copy_item_to_repo(item):
 
 def copy_item_from_repo(item):
     pass
-
-
-@route('/schedule_<kind>_backup', method='GET')
-def schedule_backup(kind):
-    days = ['sun', 'mon', 'tue', 'wed', 'thu', 'fri', 'sat']
-    path = request.GET.file_path.strip()
-    result = None
-    conn = sqlite3.connect(db_backup_info + '.db')
-    c = conn.cursor()
-
-    if kind == 'weekly':
-        checked_days = '_'.join([i for i in request.query.keys() if i in days])
-        if not checked_days:
-            result = template('html/schedule_{}_backup'.format(kind),
-                              msg='Error: At least one day must be selected.', msg_type='warning')
-        else:
-            c.execute('INSERT INTO {} VALUES (?,?,?,?,?)'.format(db_backup_schedule),
-                      (None, path, checked_days, 'weekly', request.GET.time.strip()))
-            conn.commit()
-
-            result = template('html/schedule_{}_backup'.format(kind), msg='Successful backup of: ' + path)
-
-    elif kind == 'monthly':
-        pass
-    elif kind == 'custom':
-        pass
-    else:
-        pass
-
-    if not os.path.exists(path):
-        result = template('html/schedule_{}_backup'.format(kind),
-                          msg='Error: The path specified was invalid.', msg_type='warning')
-
-    c.close()
-    return result
 
 
 @error(404)
