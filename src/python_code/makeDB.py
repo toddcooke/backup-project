@@ -20,7 +20,7 @@ CREATE TABLE IF NOT EXISTS backup_schedule(
 bup_id INTEGER PRIMARY KEY,
 path TEXT NOT NULL,
 offset INTEGER NOT NULL,
-bup_date TEXT NOT NULL
+schedule_date TEXT NOT NULL
 )""")
 
 con.commit()

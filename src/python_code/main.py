@@ -6,15 +6,10 @@ import sqlite3
 import datetime
 from bottle import route, run, template, request, static_file, error
 
-db_backup_info = 'backup_info'
-db_backup_schedule = 'backup_schedule'
-backup_repository = 'backup_repository'
-date_format = "%m/%d/%Y"
-
 
 def str_to_date(s):
     """
-    :param s: s in format mm/dd/yyyy
+    :param s: s in format yyyy-mm-dd
     :return: s in datetime format
     """
     return datetime.datetime.strptime(s, date_format)
@@ -39,14 +34,13 @@ def add_x_days(d, x):
 
 @route('/schedule_backup', method='GET')
 def schedule_backup():
-    days = ['sun', 'mon', 'tue', 'wed', 'thu', 'fri', 'sat']
     path = request.GET.file_path.strip()
     conn = sqlite3.connect(db_backup_info + '.db')
     c = conn.cursor()
     req = request.GET
 
-    c.execute('INSERT INTO {} VALUES (?,?,?,?,?)'.format(db_backup_schedule),
-              (None, path, req.offset.strip, 1, req.dom))
+    c.execute('INSERT INTO {} VALUES (?,?,?,?)'.format(db_backup_schedule),
+              (None, path, req.offset.strip(), req.date.strip()))
     conn.commit()
 
     result = template('html/schedule_backup', msg='Successful backup of: ' + path)
@@ -117,6 +111,12 @@ def copy_item_from_repo(item):
 def mistake404(code):
     return 'Sorry, this page does not exist!'
 
+
+db_backup_info = 'backup_info'
+db_backup_schedule = 'backup_schedule'
+backup_repository = 'backup_repository'
+date_format = "%Y-%m-%d"
+# today = date_to_str(datetime.datetime.today())
 
 if __name__ == '__main__':
     # Start bottle server with debugging enabled
