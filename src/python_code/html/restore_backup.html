@@ -1,30 +1,20 @@
 % include('html/header.html')
+<h2>Restore Backup</h2>
+<hr>
 
-<div class="container">
-    <div class="row">
-        <div class="col-md-12">
-            <h2>Restore Backup</h2>
-            <hr>
-
-            <form action="restore_backup.html">
-                <div class="form-group" id="dow">
-                    <p>Pick a version of an item to restore.</p>
-                    {{DB_info}}
-                    <p>Path to item, Day(s) of backup, Frequency of backup, Time of backup</p>
-                    <div class="radio">
-                        % for count, item in enumerate(DB_info):
-                        <label><input type="radio" value="{{DB_info[count][0]}}" name='db_item'>
-                            {{', '.join(DB_info[count][1:5])}}</label>
-                        % end
-                    </div>
-
-
-                    <!--Todo show all backup versions here in one table. datatable maybe?-->
-                </div>
-                <button type="submit" class="btn btn-primary" id="reg_bup_submit">Submit</button>
-            </form>
+<form action="restore_backup.html">
+    <div class="form-group" id="dow">
+        <p>Pick a version of an item to restore.</p>
+        {{DB_info}}
+        <p>Path to item, Day(s) of backup, Frequency of backup, Time of backup</p>
+        <div class="radio">
+            % for count, item in enumerate(DB_info):
+            <label><input type="radio" value="{{DB_info[count][0]}}" name='db_item'>
+                {{', '.join(DB_info[count][1:5])}}</label>
+            % end
         </div>
     </div>
-</div>
+    <button type="submit" class="btn btn-primary" id="reg_bup_submit">Submit</button>
+</form>
 
 % include('html/footer.html')

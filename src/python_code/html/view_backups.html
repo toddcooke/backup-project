@@ -1,0 +1,39 @@
+% include('html/header.html')
+
+<h2>View Backups</h2>
+<hr>
+
+<div class="form-group" id="dow">
+    <p>List of all scheduled backups.</p>
+    <table class="table" >
+
+        <tr>
+            <th></th>
+            <th>Path</th>
+            <th>Offset</th>
+            <th>Date of first backup</th>
+        </tr>
+        % for i in DB_schedule:
+        <tr>
+            % for j in i:
+            <td>{{j}}</td>
+            % end
+        </tr>
+        % end
+
+    </table>
+
+    <p>List of all performed backups.</p>
+    <table class="table" >
+        % for i in DB_info:
+        <tr>
+            % for j in i:
+            <td>{{j}}</td>
+            % end
+        </tr>
+        % end
+
+    </table>
+</div>
+
+% include('html/footer.html')

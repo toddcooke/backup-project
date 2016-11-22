@@ -32,6 +32,39 @@ def add_x_days(d, x):
     return d + datetime.timedelta(days=x)
 
 
+@route('/view_backups.html', method='GET')
+def view_backups():
+    path = request.GET.file_path.strip()
+    conn = sqlite3.connect(db_backup_info + '.db')
+    c = conn.cursor()
+
+    c.execute("SELECT * FROM {}".format(db_backup_info))
+    select_info = c.fetchall()
+
+    c.execute("SELECT * FROM {}".format(db_backup_schedule))
+    select_schedule = c.fetchall()
+
+    # If user has not hit submit yet
+    if not path:
+        result = template('html/view_backups', DB_info=select_info, DB_schedule=select_schedule)
+
+    else:
+        if not select_info:
+            result = template('html/view_backups',
+                              msg='Error: There are no backups to restore',
+                              msg_type='warning', DB_info=select_info, DB_schedule=select_schedule)
+        else:
+            result = template('html/view_backups', msg=select_info, DB_info=select_info, DB_schedule=select_schedule)
+
+    # If backup_info table is empty
+    if not select_info:
+        result = template('html/view_backups', msg='Nothing has been backed up yet!', DB_info=select_info,
+                          DB_schedule=select_schedule)
+
+    c.close()
+    return result
+
+
 @route('/schedule_backup', method='GET')
 def schedule_backup():
     path = request.GET.file_path.strip()
@@ -43,7 +76,7 @@ def schedule_backup():
               (None, path, req.offset.strip(), req.date.strip()))
     conn.commit()
 
-    result = template('html/schedule_backup', msg='Successful backup of: ' + path)
+    result = template('html/schedule_backup', msg='Successfully scheduled backup of: ' + path)
 
     if not os.path.exists(path):
         result = template('html/schedule_backup',
