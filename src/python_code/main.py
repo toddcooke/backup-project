@@ -1,40 +1,17 @@
 #!/usr/bin/python
 
 import os
-import shutil
 import sqlite3
-import datetime
+import threading
 from bottle import route, run, template, request, static_file, error
+from scheduler import backup_service, db_backup_info, db_backup_schedule
+from makeDB import make_db
+
+make_db()
 
 
-def str_to_date(s):
-    """
-    :param s: s in format yyyy-mm-dd
-    :return: s in datetime format
-    """
-    return datetime.datetime.strptime(s, date_format)
-
-
-def date_to_str(d):
-    """
-    :param d:
-    :return: d in a string format
-    """
-    return d.strftime(date_format)
-
-
-def add_x_days(d, x):
-    """
-    :param d: datetime object
-    :param x: integer, number of days to increment
-    :return: d incremented by x days
-    """
-    return d + datetime.timedelta(days=x)
-
-
-@route('/view_backups.html', method='GET')
+@route('/view_backups.html')
 def view_backups():
-    path = request.GET.file_path.strip()
     conn = sqlite3.connect(db_backup_info + '.db')
     c = conn.cursor()
 
@@ -44,25 +21,8 @@ def view_backups():
     c.execute("SELECT * FROM {}".format(db_backup_schedule))
     select_schedule = c.fetchall()
 
-    # If user has not hit submit yet
-    if not path:
-        result = template('html/view_backups', DB_info=select_info, DB_schedule=select_schedule)
-
-    else:
-        if not select_info:
-            result = template('html/view_backups',
-                              msg='Error: There are no backups to restore',
-                              msg_type='warning', DB_info=select_info, DB_schedule=select_schedule)
-        else:
-            result = template('html/view_backups', msg=select_info, DB_info=select_info, DB_schedule=select_schedule)
-
-    # If backup_info table is empty
-    if not select_info:
-        result = template('html/view_backups', msg='Nothing has been backed up yet!', DB_info=select_info,
-                          DB_schedule=select_schedule)
-
     c.close()
-    return result
+    return template('html/view_backups', DB_info=select_info, DB_schedule=select_schedule)
 
 
 @route('/schedule_backup', method='GET')
@@ -129,28 +89,19 @@ def any_html(item):
     return template('html/{}'.format(item))
 
 
-def copy_item_to_repo(item):
-    if os.path.isfile(item):
-        shutil.copy2(item, backup_repository + os.path.sep)
-    else:
-        shutil.copytree(item, backup_repository + os.path.sep + os.path.basename(item))
-
-
-def copy_item_from_repo(item):
-    pass
-
-
 @error(404)
 def mistake404(code):
     return 'Sorry, this page does not exist!'
 
 
-db_backup_info = 'backup_info'
-db_backup_schedule = 'backup_schedule'
-backup_repository = 'backup_repository'
-date_format = "%Y-%m-%d"
-# today = date_to_str(datetime.datetime.today())
-
 if __name__ == '__main__':
+    # # print today - today
+    # print datetime.datetime.today() + datetime.timedelta(days=1)
+    # print (datetime.datetime.today() - datetime.datetime.today()).days
+    #
+    # exit()
+
+    threading.Thread(target=backup_service).start()
+
     # Start bottle server with debugging enabled
     run(debug=True)
