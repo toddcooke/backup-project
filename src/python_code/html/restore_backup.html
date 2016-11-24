@@ -4,17 +4,32 @@
 
 <form action="restore_backup.html">
     <div class="form-group" id="dow">
-        <p>Pick a version of an item to restore.</p>
-        {{DB_info}}
-        <p>Path to item, Day(s) of backup, Frequency of backup, Time of backup</p>
-        <div class="radio">
-            % for count, item in enumerate(DB_info):
-            <label><input type="radio" value="{{DB_info[count][0]}}" name='db_item'>
-                {{', '.join(DB_info[count][1:5])}}</label>
+        <p>Pick a version of an item to restore from the list of all performed backups:</p>
+        <table class="table table-striped">
+            <thead>
+            <tr>
+                <th>#</th>
+                <th>Bup_ID</th>
+                <th>Path</th>
+                <th>Offset</th>
+                <th>Date of performed backup</th>
+                <th></th>
+            </tr>
+            </thead>
+            <tbody>
+            % for i in DB_info:
+            <tr>
+                % for j in i:
+                <td>{{j}}</td>
+                % end
+                <td>
+                    <button type="submit" name="restore" value="{{i[0]}}" class="btn btn-primary btn-sm">Restore</button>
+                </td>
+            </tr>
             % end
-        </div>
+            </tbody>
+        </table>
     </div>
-    <button type="submit" class="btn btn-primary" id="reg_bup_submit">Submit</button>
 </form>
 
 % include('html/footer.html')

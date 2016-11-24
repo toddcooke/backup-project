@@ -4,10 +4,9 @@ import os
 import sqlite3
 import threading
 from bottle import route, run, template, request, static_file, error
-from scheduler import backup_service, db_backup_info, db_backup_schedule
+from scheduler import backup_service, db_backup_info, db_backup_schedule, copy_item_from_repo, backup_repository, \
+    stamp_sep
 from makeDB import make_db
-
-make_db()
 
 
 @route('/view_backups.html')
@@ -48,30 +47,25 @@ def schedule_backup():
 
 @route('/restore_backup.html', method='GET')
 def restore_backup():
-    path = request.GET.file_path.strip()
+    restore = request.GET.restore.strip()
     conn = sqlite3.connect(db_backup_info + '.db')
     c = conn.cursor()
 
     c.execute("SELECT * FROM {}".format(db_backup_info))
-    select_schedule = c.fetchall()
+    select_info = c.fetchall()
 
-    # If backup_info table is empty
-    if not select_schedule:
-        return template('html/restore_backup', msg='Nothing has been backed up yet!', DB_info=select_schedule)
-
-    # If user has not hit submit yet
-    if not path:
-        c.close()
-        return template('html/restore_backup', DB_info=select_schedule)
+    if restore:
+        src, bup_date = c.execute(
+            "SELECT path, bup_date FROM {} WHERE id = ?".format(db_backup_info), restore).fetchone()
+        copy_item_from_repo(os.path.join(backup_repository, os.path.basename(src) + stamp_sep + bup_date), src)
+        result = template('html/restore_backup', DB_info=select_info,
+                          msg='Item ' + src + ', backed up on ' + bup_date + ', has been restored.')
 
     else:
-        c.execute("SELECT * FROM {}".format(db_backup_info))
-        select_schedule = c.fetchall()
-        c.close()
-        if not select_schedule:
-            return template('html/restore_backup',
-                            msg='Error: There are no backups to restore', msg_type='warning', DB_info=select_schedule)
-        return template('html/restore_backup', msg=select_schedule, DB_info=select_schedule)
+        result = template('html/restore_backup', DB_info=select_info)
+
+    c.close()
+    return result
 
 
 @route('/static/<filename>')
@@ -95,11 +89,7 @@ def mistake404(code):
 
 
 if __name__ == '__main__':
-    # # print today - today
-    # print datetime.datetime.today() + datetime.timedelta(days=1)
-    # print (datetime.datetime.today() - datetime.datetime.today()).days
-    #
-    # exit()
+    make_db()
 
     threading.Thread(target=backup_service).start()
 

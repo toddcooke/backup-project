@@ -29,17 +29,17 @@
     <table class="table table-striped">
         <thead>
         <tr>
-            <th>#</th>
+            <!--<th>#</th>-->
             <th>Bup_ID</th>
             <th>Path</th>
             <th>Offset</th>
-            <th>Date of first backup</th>
+            <th>Date of performed backup</th>
         </tr>
         </thead>
         <tbody>
         % for i in DB_info:
         <tr>
-            % for j in i:
+            % for j in i[1:]:
             <td>{{j}}</td>
             % end
         </tr>
