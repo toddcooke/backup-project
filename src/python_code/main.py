@@ -1,11 +1,11 @@
-#!/usr/bin/python
+#!/usr/bin/env python2.7
 
 import os
 import sqlite3
 import threading
 from bottle import route, run, template, request, static_file, error
-from scheduler import backup_service, db_backup_info, db_backup_schedule, copy_item_from_repo, backup_repository, \
-    stamp_sep
+from scheduler import backup_service, db_backup_info, db_backup_schedule, \
+    copy_item_from_repo, backup_repository, stamp_sep
 from makeDB import make_db
 
 
@@ -30,9 +30,10 @@ def schedule_backup():
     conn = sqlite3.connect(db_backup_info + '.db')
     c = conn.cursor()
     req = request.GET
+    date = req.date.strip()
 
     c.execute('INSERT INTO {} VALUES (?,?,?,?)'.format(db_backup_schedule),
-              (None, path, req.offset.strip(), req.date.strip()))
+              (None, path, req.offset.strip(), date))
     conn.commit()
 
     result = template('html/schedule_backup', msg='Successfully scheduled backup of: ' + path)
@@ -57,7 +58,9 @@ def restore_backup():
     if restore:
         src, bup_date = c.execute(
             "SELECT path, bup_date FROM {} WHERE id = ?".format(db_backup_info), restore).fetchone()
+
         copy_item_from_repo(os.path.join(backup_repository, os.path.basename(src) + stamp_sep + bup_date), src)
+
         result = template('html/restore_backup', DB_info=select_info,
                           msg='Item ' + src + ', backed up on ' + bup_date + ', has been restored.')
 
@@ -89,8 +92,10 @@ def mistake404(code):
 
 
 if __name__ == '__main__':
+    # Make the db and tables if not already created
     make_db()
 
+    # Start the backup service in the background
     threading.Thread(target=backup_service).start()
 
     # Start bottle server with debugging enabled

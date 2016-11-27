@@ -12,20 +12,45 @@ stamp_sep = '.'
 
 
 def copy_item_to_repo(src, stamp):
+    """
+    Copies a file or dir to the bup repo
+    :param src: The item to copy
+    :param stamp: A timestamp which is today's date in fmt yyyy-mm-dd
+    """
     basename = os.path.basename(src)
     stamp = stamp_sep + stamp
     if os.path.isfile(src):
-        shutil.copy2(src, backup_repository + os.path.sep + basename + stamp)
+        shutil.copy2(src, os.path.join(backup_repository, basename + stamp))
+    elif os.path.isdir(src):
+        shutil.copytree(src, os.path.join(backup_repository, os.path.basename(src) + stamp))
     else:
-        shutil.copytree(src, backup_repository + os.path.sep + os.path.basename(src) + stamp)
+        # TODO handle case where item is deleted
+        pass
 
 
 def copy_item_from_repo(src, dest):
+    """
+    Copies an file or dir from the the bup repo to its original location
+    :param src: The item to copy
+    :param dest: The original location of the item
+    """
     if os.path.isfile(src):
         # dest = /home/todd/ok
         shutil.copy2(src, dest)
-    else:
+    elif os.path.isdir(src):
         shutil.copytree(src, dest)
+    else:
+        # TODO handle case where items are in DB_info but not in bup repo
+        pass
+
+
+def str_to_date(s):
+    """
+    :param s: s in format yyyy-mm-dd
+    :return: s in datetime format
+    """
+    s = [int(i) for i in s.split('-')]
+    return datetime.date(s[0], s[1], s[2])
 
 
 def backup_service():
@@ -65,12 +90,3 @@ def backup_service():
                     conn.commit()
 
         c.close()
-
-
-def str_to_date(s):
-    """
-    :param s: s in format yyyy-mm-dd
-    :return: s in datetime format
-    """
-    s = [int(i) for i in s.split('-')]
-    return datetime.date(s[0], s[1], s[2])
