@@ -56,10 +56,11 @@ def restore_backup():
     select_info = c.fetchall()
 
     if restore:
-        src, bup_date = c.execute(
-            "SELECT path, bup_date FROM {} WHERE id = ?".format(db_backup_info), restore).fetchone()
+        bup_id, src, bup_date = c.execute(
+            "SELECT bup_id, path, bup_date FROM {} WHERE id = ?".format(db_backup_info), restore).fetchone()
 
-        copy_item_from_repo(os.path.join(backup_repository, os.path.basename(src) + stamp_sep + bup_date), src)
+        copy_item_from_repo(
+            os.path.join(backup_repository, os.path.basename(src) + stamp_sep + bup_date + stamp_sep + str(bup_id)), src)
 
         result = template('html/restore_backup', DB_info=select_info,
                           msg='Item ' + src + ', backed up on ' + bup_date + ', has been restored.')

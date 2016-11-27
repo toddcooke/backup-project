@@ -11,20 +11,21 @@ backup_repository = 'backup_repository'
 stamp_sep = '.'
 
 
-def copy_item_to_repo(src, stamp):
+def copy_item_to_repo(src, stamp, id):
     """
     Copies a file or dir to the bup repo
     :param src: The item to copy
     :param stamp: A timestamp which is today's date in fmt yyyy-mm-dd
+    :param id: The bup id of the item to copy
     """
     basename = os.path.basename(src)
-    stamp = stamp_sep + stamp
+    stamp = stamp_sep + stamp + stamp_sep + str(id)
     if os.path.isfile(src):
         shutil.copy2(src, os.path.join(backup_repository, basename + stamp))
     elif os.path.isdir(src):
         shutil.copytree(src, os.path.join(backup_repository, os.path.basename(src) + stamp))
     else:
-        # TODO handle case where item is deleted
+        # TODO handle case where item is in DB_info but not filesystem
         pass
 
 
@@ -35,9 +36,11 @@ def copy_item_from_repo(src, dest):
     :param dest: The original location of the item
     """
     if os.path.isfile(src):
-        # dest = /home/todd/ok
         shutil.copy2(src, dest)
     elif os.path.isdir(src):
+        # Must delete existing dir before creating new one
+        if os.path.exists(dest):
+            shutil.rmtree(dest)
         shutil.copytree(src, dest)
     else:
         # TODO handle case where items are in DB_info but not in bup repo
@@ -71,19 +74,21 @@ def backup_service():
         select_info = c.fetchall()
 
         for count, entry in enumerate(select_schedule):
-            path = entry[1]
-            offset = entry[2]
-            schedule_date = entry[3]
+            bup_id, path, offset, schedule_date = entry
+            # path = entry[1]
+            # offset = entry[2]
+            # schedule_date = entry[3]
 
             already_in = c.execute(
-                "SELECT * FROM {} WHERE path = ? AND bup_date = ?".format(db_backup_info), (path, today)).fetchone()
+                "SELECT * FROM {} WHERE bup_id = ? AND path = ? AND bup_date = ?".format(db_backup_info),
+                (bup_id, path, today)).fetchone()
 
             # if item was not already backed up today or if db_info is not populated
             if not select_info or not already_in:
                 # if today is the day to backup
                 if (str_to_date(schedule_date) - today).days % int(offset) == 0:
                     # backup this path to backup repo
-                    copy_item_to_repo(path, str(today))
+                    copy_item_to_repo(path, str(today), bup_id)
                     # make entry in db_info
                     c.execute("INSERT INTO {} VALUES (?,?,?,?,?)".format(db_backup_info),
                               (None, entry[0], entry[1], entry[2], str(today)))
