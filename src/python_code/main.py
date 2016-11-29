@@ -3,6 +3,7 @@
 import os
 import sqlite3
 import threading
+import gzip
 from bottle import route, run, template, request, static_file, error
 from scheduler import backup_service, db_backup_info, db_backup_schedule, \
     copy_item_from_repo, backup_repository, stamp_sep
@@ -20,7 +21,7 @@ def view_backups():
     c.execute("SELECT * FROM {}".format(db_backup_schedule))
     select_schedule = c.fetchall()
 
-    c.close()
+    conn.close()
     return template('html/view_backups', DB_info=select_info, DB_schedule=select_schedule)
 
 
@@ -42,7 +43,7 @@ def schedule_backup():
         result = template('html/schedule_backup',
                           msg='Error: The path specified was invalid.', msg_type='warning')
 
-    c.close()
+    conn.close()
     return result
 
 
@@ -60,7 +61,8 @@ def restore_backup():
             "SELECT bup_id, path, bup_date FROM {} WHERE id = ?".format(db_backup_info), restore).fetchone()
 
         copy_item_from_repo(
-            os.path.join(backup_repository, os.path.basename(src) + stamp_sep + bup_date + stamp_sep + str(bup_id)), src)
+            os.path.join(backup_repository, os.path.basename(src) + stamp_sep + bup_date + stamp_sep + str(bup_id)),
+            src)
 
         result = template('html/restore_backup', DB_info=select_info,
                           msg='Item ' + src + ', backed up on ' + bup_date + ', has been restored.')
@@ -68,7 +70,7 @@ def restore_backup():
     else:
         result = template('html/restore_backup', DB_info=select_info)
 
-    c.close()
+    conn.close()
     return result
 
 
@@ -100,4 +102,4 @@ if __name__ == '__main__':
     threading.Thread(target=backup_service).start()
 
     # Start bottle server with debugging enabled
-    run(debug=True)
+    run(port=8080, debug=True)

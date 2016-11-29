@@ -6,7 +6,7 @@ def todo_list():
     c = conn.cursor()
     c.execute("SELECT id, task FROM todo WHERE status LIKE '1'")
     result = c.fetchall()
-    c.close()
+    conn.close()
 
     output = template('make_table', rows=result)
     return output
@@ -24,7 +24,7 @@ def new_item():
         new_id = c.lastrowid
 
         conn.commit()
-        c.close()
+        conn.close()
 
         return '<p>The new task was inserted into the database, the ID is %s</p>' % new_id
 
@@ -64,7 +64,7 @@ def show_item(item):
     c = conn.cursor()
     c.execute("SELECT task FROM todo WHERE id LIKE ?", (item,))
     result = c.fetchall()
-    c.close()
+    conn.close()
 
     if not result:
         return 'This item number does not exist!'
@@ -83,7 +83,7 @@ def show_json(json):
     c = conn.cursor()
     c.execute("SELECT task FROM todo WHERE id LIKE ?", (json,))
     result = c.fetchall()
-    c.close()
+    conn.close()
 
     if not result:
         return {'task': 'This item number does not exist!'}
