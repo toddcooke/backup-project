@@ -1,9 +1,36 @@
 % include('html/header.html')
-<h2>Restore Backup</h2>
+<h2>Manage Backups</h2>
 <hr>
 
-<form action="restore_backup.html">
+<form action="manage_backups.html">
     <div class="form-group" id="dow">
+
+        <p>List of all scheduled backups:</p>
+        <table class="table table-striped">
+            <thead>
+            <tr>
+                <th>Bup_ID</th>
+                <th>Path</th>
+                <th>Offset</th>
+                <th>Date of first backup</th>
+                <th></th>
+            </tr>
+            </thead>
+            <tbody>
+            % for i in DB_schedule:
+            <tr>
+                % for j in i:
+                <td>{{j}}</td>
+                % end
+                <td>
+                    <button type="submit" name="delete" value="{{i[0]}}" class="btn btn-danger btn-sm">Delete</button>
+                </td>
+            </tr>
+            % end
+            </tbody>
+        </table>
+
+
         <p>Pick a version of an item to restore from the list of all performed backups:</p>
         <table class="table table-striped">
             <thead>
@@ -23,6 +50,8 @@
                 <td>{{j}}</td>
                 % end
                 <td>
+                    <!--<button type="submit" name="delete" value="{{i[0]}}" class="btn btn-danger btn-sm">Delete</button>-->
+
                     <button type="submit" name="restore" value="{{i[0]}}" class="btn btn-primary btn-sm">Restore</button>
                 </td>
             </tr>
