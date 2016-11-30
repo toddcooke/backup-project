@@ -8,6 +8,7 @@
 </div>
 
 <dl>
+	<div style="background-color:#d6d4d1; border-radius: 25px; padding-left:15px; padding-right: 5px; padding-bottom:3px">
 	<dt><h2>Regular Backup</dt></h2>
 		<dd>-- To set up a basic backup, start here. You will be prompted to enter a date you want your data backed up. On that date, every 60 seconds the program will check to see if the backup has already been performed. The values for a date can either be entered manually in, or you can click the arrow located on the right of the field to drop down a calendar and pick your backup date.
 		<br>
@@ -17,17 +18,19 @@
 		<br><br>
 		-- Finally, you will be asked to enter the path to the file or directory you would like backed up.
 		<br><br>
-		For an idea of what a file path looks like on your OS, consult the following:
+		The following gives examples on what a file path looks like in their respective Operating Systems. The examples will show how to backup a user's Pictures directory.
 			<ul style = "list-style-type:none">
-				<li>Windows: <b>C:\Users\user1\Pictures</b> (This will back up the Pictures directory of user1.)</li>
-				<li>Mac OSX: <b>/Users/user1/Pictures</b> (This will back up the Pictures directory of user1.)</li>
-				<li>Linux: <b>/home/user1/Pictures</b> (This will back up the Pictures directory of user1.)</li>
+				<li><b>Windows:</b> C:\Users\user1\Pictures</li>
+				<li><b>Mac OSX:</b> /Users/user1/Pictures</li>
+				<li><b>Linux:</b> /home/user1/Pictures</li>
 			</ul>
 		</dd>
-	<dt><h2>View Backups</dt></h2>
+		</div>
+		<div style="background-color:#e8e7e5; border-radius: 25px; padding-left:15px; padding-right: 5px; padding-bottom:3px" >
+	<dt><h2>   View Backups</dt></h2>
 		<dd>-- After configuring your backup dates, you can view all current backups from the "View Backups" link. Here you will find a table that has all relevant information on your backups. 
 		<br><br>
-		Here's a quick explanation on what the values on the table mean:
+		   Here's a quick explanation on what the values on the table mean:
 			<ul style = "list-style-type:none">
 				<li><b>Bup_ID:</b> This is a value that identifies your backups, starting at 1.</li>
 				<li><b>Path:</b> The path to the directory you want backed up.</li>
@@ -36,10 +39,16 @@
 				<li><b>Date of performed backup:</b> The date the most recent backup was performed.</li>
 			</ul>
 		</dd>
+		</div>
+		<div style="background-color:#d6d4d1; border-radius: 25px; padding-left:15px; padding-right: 5px; padding-bottom:3px">
 	<dt><h2>Restore Backup</dt></h2>
 		<dd>-- If disaster has struck and you need to recover your backup, follow the "Restore Backup" link. Here you will find a table of all backups that you have scheduled, with a blue "Restore" button found on the right side. Locate the backup that you would like to restore, click "Restore", and... that's it!</dd>
+		<br>
+		</div>
+		<div style="background-color:#e8e7e5; border-radius: 25px; padding-left:15px; padding-right: 5px; padding-bottom:3px" >
 	<dt><h2>Recovery Media</dt></h2>
 		<dd>-- blah</dd>
+		</div>
 </dl>
 
 % include('html/footer.html')
