@@ -68,19 +68,19 @@ def backup_service():
 
         today = datetime.date.today()
 
-        conn = sqlite3.connect(db_backup_info + '.db')
-        c = conn.cursor()
+        connection = sqlite3.connect(db_backup_info + '.db')
+        cur = connection.cursor()
 
-        c.execute("SELECT * FROM {}".format(db_backup_schedule))
-        select_schedule = c.fetchall()
+        cur.execute("SELECT * FROM {}".format(db_backup_schedule))
+        select_schedule = cur.fetchall()
 
-        c.execute("SELECT * FROM {}".format(db_backup_info))
-        select_info = c.fetchall()
+        cur.execute("SELECT * FROM {}".format(db_backup_info))
+        select_info = cur.fetchall()
 
         for count, entry in enumerate(select_schedule):
             bup_id, path, offset, schedule_date = entry
 
-            already_in = c.execute(
+            already_in = cur.execute(
                 "SELECT * FROM {} WHERE bup_id = ? AND path = ?".format(db_backup_info),
                 (bup_id, path)).fetchone()
 
@@ -91,20 +91,31 @@ def backup_service():
                     # backup this path to backup repo
                     copy_item_to_repo(path, str(today), bup_id)
                     # make entry in db_info
-                    c.execute("INSERT INTO {} VALUES (?,?,?,?,?)".format(db_backup_info),
-                              (None, entry[0], entry[1], entry[2], str(today)))
-                    conn.commit()
+                    cur.execute("INSERT INTO {} VALUES (?,?,?,?,?)".format(db_backup_info),
+                                (None, entry[0], entry[1], entry[2], str(today)))
+                    connection.commit()
 
-        conn.close()
+        connection.close()
 
 
 def delete_from_db(bup_id):
     conn = sqlite3.connect(db_backup_info + '.db')
     c = conn.cursor()
 
-    c.execute("DELETE * FROM {} WHERE bup_id = ?".format(db_backup_schedule), bup_id)
+    c.execute("DELETE FROM {} WHERE bup_id = ?".format(db_backup_schedule), bup_id)
+
+    try:
+        for filename in os.listdir(backup_repository):
+            if filename[-1] == str(bup_id):
+                if os.path.isdir(filename):
+                    shutil.rmtree(os.path.join(backup_repository, filename))
+                else:
+                    os.remove(os.path.join(backup_repository, filename))
+    except OSError:
+        # ignore case where item is in db but not repo
+        pass
+
     conn.commit()
-    conn.close()
     conn.close()
 
 
@@ -139,7 +150,8 @@ def decrypt(key, string):
     return decoded_string
 
 
-if __name__ == '__main__':
-    print encrypt('232', 'i am a string')
-    print decrypt('232', 'm1OTn1OTUqampJygmQ==')
+# if __name__ == '__main__':
+#     print encrypt('232', 'i am a string')
+#     print decrypt('232', 'm1OTn1OTUqampJygmQ==')
     # TODO implement encryption and compression
+    # TODO create object which stores original path as well as curent path

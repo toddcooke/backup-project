@@ -5,30 +5,22 @@ import sqlite3
 import threading
 from bottle import route, run, template, request, static_file, error
 from scheduler import backup_service, db_backup_info, db_backup_schedule, \
-    copy_item_from_repo, backup_repository, stamp_sep
+    copy_item_from_repo, backup_repository, stamp_sep, delete_from_db
 from makeDB import make_db
 
 
 def select_all_info():
-    pass
+    return c.execute("SELECT * FROM {}".format(db_backup_info)).fetchall()
 
 
 def select_all_schedule():
-    pass
+    return c.execute("SELECT * FROM {}".format(db_backup_schedule)).fetchall()
 
 
 @route('/view_backups.html')
 def view_backups():
-    conn = sqlite3.connect(db_backup_info + '.db')
-    c = conn.cursor()
-
-    c.execute("SELECT * FROM {}".format(db_backup_info))
-    select_info = c.fetchall()
-
-    c.execute("SELECT * FROM {}".format(db_backup_schedule))
-    select_schedule = c.fetchall()
-
-    conn.close()
+    select_info = select_all_info()
+    select_schedule = select_all_schedule()
     return template('html/view_backups', DB_info=select_info, DB_schedule=select_schedule)
 
 
@@ -36,15 +28,8 @@ def view_backups():
 def manage_backups():
     restore_id = request.GET.restore.strip()
     delete_id = request.GET.delete.strip()
-    conn = sqlite3.connect(db_backup_info + '.db')
-    c = conn.cursor()
-
-    c.execute("SELECT * FROM {}".format(db_backup_info))
-    select_info = c.fetchall()
-
-    c.execute("SELECT * FROM {}".format(db_backup_schedule))
-    select_schedule = c.fetchall()
-
+    select_info = select_all_info()
+    select_schedule = select_all_schedule()
     result = template('html/manage_backups', DB_info=select_info, DB_schedule=select_schedule)
 
     if restore_id:
@@ -62,37 +47,32 @@ def manage_backups():
         c.execute('DELETE FROM {} WHERE bup_id = ?'.format(db_backup_info), delete_id)
         c.execute('DELETE FROM {} WHERE bup_id = ?'.format(db_backup_schedule), delete_id)
         conn.commit()
-        c.execute("SELECT * FROM {}".format(db_backup_info))
-        select_info = c.fetchall()
 
-        c.execute("SELECT * FROM {}".format(db_backup_schedule))
-        select_schedule = c.fetchall()
+        delete_from_db(delete_id)
+
+        select_info = select_all_info()
+        select_schedule = select_all_schedule()
         result = template('html/manage_backups', DB_info=select_info, DB_schedule=select_schedule,
-                          msg='The entry: ' + pathname + ' has been removed.')
+                          msg='The entry ' + pathname + ' has been removed.')
 
-    conn.close()
     return result
 
 
 @route('/schedule_backup', method='GET')
 def schedule_backup():
     path = request.GET.file_path.strip()
-    conn = sqlite3.connect(db_backup_info + '.db')
-    c = conn.cursor()
     req = request.GET
     date = req.date.strip()
-
-    c.execute('INSERT INTO {} VALUES (?,?,?,?)'.format(db_backup_schedule),
-              (None, path, req.offset.strip(), date))
-    conn.commit()
-
     result = template('html/schedule_backup', msg='Successfully scheduled backup of: ' + path)
 
     if not os.path.exists(path):
         result = template('html/schedule_backup',
                           msg='Error: The path specified was invalid.', msg_type='warning')
+    else:
+        c.execute('INSERT INTO {} VALUES (?,?,?,?)'.format(db_backup_schedule),
+                  (None, path, req.offset.strip(), date))
+        conn.commit()
 
-    conn.close()
     return result
 
 
@@ -117,6 +97,9 @@ def mistake404(code):
 
 
 if __name__ == '__main__':
+    conn = sqlite3.connect(db_backup_info + '.db')
+    c = conn.cursor()
+
     # Make the db and tables if not already created
     make_db()
 
