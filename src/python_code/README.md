@@ -17,6 +17,16 @@ On windows: click on main.py
 5. To exit, close the terminal window
 
 
+Enabling Recurring Backups:
+Since the program can only backup when it is running,
+you may want to have this program start up automatically at startup.
+To do this on Windows:
+https://answers.microsoft.com/en-us/windows/forum/windows_7-windows_programs/how-to-add-a-program-to-startup/91d18255-659e-4796-87f6-5e6c814c7d50
+To do this on Mac:
+https://stackoverflow.com/questions/6442364/running-script-upon-login-mac
+To do this on Linux:
+https://stackoverflow.com/questions/12973777/how-to-run-a-shell-script-at-startup
+
 
 Code used:
 
