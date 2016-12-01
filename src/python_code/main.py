@@ -19,18 +19,14 @@ def select_all_schedule():
 
 @route('/view_backups.html')
 def view_backups():
-    select_info = select_all_info()
-    select_schedule = select_all_schedule()
-    return template('html/view_backups', DB_info=select_info, DB_schedule=select_schedule)
+    return template('html/view_backups', DB_info=select_all_info(), DB_schedule=select_all_schedule())
 
 
 @route('/manage_backups.html', method='GET')
 def manage_backups():
     restore_id = request.GET.restore.strip()
     delete_id = request.GET.delete.strip()
-    select_info = select_all_info()
-    select_schedule = select_all_schedule()
-    result = template('html/manage_backups', DB_info=select_info, DB_schedule=select_schedule)
+    result = template('html/manage_backups', DB_info=select_all_info(), DB_schedule=select_all_schedule())
 
     if restore_id:
         bup_id, src, bup_date = c.execute(
@@ -39,7 +35,7 @@ def manage_backups():
         copy_item_from_repo(os.path.join(backup_repository,
                                          os.path.basename(src) + stamp_sep + bup_date + stamp_sep + str(bup_id)), src)
 
-        result = template('html/manage_backups', DB_info=select_info, DB_schedule=select_schedule,
+        result = template('html/manage_backups', DB_info=select_all_info(), DB_schedule=select_all_schedule(),
                           msg='Item ' + src + ', backed up on ' + bup_date + ', has been restored.')
 
     elif delete_id:
@@ -49,10 +45,7 @@ def manage_backups():
         conn.commit()
 
         delete_from_db(delete_id)
-
-        select_info = select_all_info()
-        select_schedule = select_all_schedule()
-        result = template('html/manage_backups', DB_info=select_info, DB_schedule=select_schedule,
+        result = template('html/manage_backups', DB_info=select_all_info(), DB_schedule=select_all_schedule(),
                           msg='The entry ' + pathname + ' has been removed.')
 
     return result
