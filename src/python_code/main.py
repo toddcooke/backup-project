@@ -58,6 +58,7 @@ def manage_backups():
     return result
 
 
+# todo: handle case where date is not in format yyyy/mm/dd
 @route('/schedule_backup', method='GET')
 def schedule_backup():
     path = request.GET.file_path.strip()

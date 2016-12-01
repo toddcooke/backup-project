@@ -99,6 +99,10 @@ def backup_service():
 
 
 def delete_from_db(bup_id):
+    """
+    Deletes all items with bup_id from the backup tables and the backup repository
+    :param bup_id: The item to remove
+    """
     conn = sqlite3.connect(db_backup_info + '.db')
     c = conn.cursor()
 
@@ -107,10 +111,12 @@ def delete_from_db(bup_id):
     try:
         for filename in os.listdir(backup_repository):
             if filename[-1] == str(bup_id):
-                if os.path.isdir(filename):
-                    shutil.rmtree(os.path.join(backup_repository, filename))
-                else:
+                # Must use absolute path of file
+                if os.path.isfile(
+                        os.path.join(os.path.dirname(os.path.realpath(__file__)), backup_repository, filename)):
                     os.remove(os.path.join(backup_repository, filename))
+                else:
+                    shutil.rmtree(os.path.join(backup_repository, filename))
     except OSError:
         # ignore case where item is in db but not repo
         pass
@@ -149,9 +155,8 @@ def decrypt(key, string):
     decoded_string = "".join(decoded_chars)
     return decoded_string
 
-
 # if __name__ == '__main__':
 #     print encrypt('232', 'i am a string')
 #     print decrypt('232', 'm1OTn1OTUqampJygmQ==')
-    # TODO implement encryption and compression
-    # TODO create object which stores original path as well as curent path
+# TODO implement encryption and compression
+# TODO create object which stores original path as well as current path
