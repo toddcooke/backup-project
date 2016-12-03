@@ -80,22 +80,14 @@ def backup_service():
         for count, entry in enumerate(select_schedule):
             bup_id, path, offset, schedule_date = entry
 
-            # print (str_to_date(schedule_date) - today).days, int(offset)
-            # print (str_to_date(schedule_date) - today).days % int(offset) == 0
-
             already_in = cur.execute(
                 "SELECT * FROM {} WHERE bup_id = ? AND path = ? AND bup_date = ?".format(db_backup_info),
                 (bup_id, path, today)).fetchone()
 
-            # print bool(select_info or already_in)
-            print "this is working"
-
             # if db_info is not populated or if item was not already backed up today
             if not select_info or not already_in:
-                print "not select info or not already in"
                 # if today is the day to backup
                 if (str_to_date(schedule_date) - today).days % int(offset) == 0:
-                    print "days match"
                     # backup this path to backup repo
                     copy_item_to_repo(path, str(today), bup_id)
                     # make entry in db_info
