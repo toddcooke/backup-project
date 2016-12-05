@@ -81,10 +81,10 @@ def backup_service():
             bup_id, path, offset, schedule_date = entry
 
             already_in = cur.execute(
-                "SELECT * FROM {} WHERE bup_id = ? AND path = ?".format(db_backup_info),
-                (bup_id, path)).fetchone()
+                "SELECT * FROM {} WHERE bup_id = ? AND path = ? AND bup_date = ?".format(db_backup_info),
+                (bup_id, path, today)).fetchone()
 
-            # if item was not already backed up today or if db_info is not populated
+            # if db_info is not populated or if item was not already backed up today
             if not select_info or not already_in:
                 # if today is the day to backup
                 if (str_to_date(schedule_date) - today).days % int(offset) == 0:
