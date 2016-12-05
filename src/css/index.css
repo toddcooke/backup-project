@@ -4,8 +4,9 @@ body {
   padding-bottom: 20px;
 }
 body {
-    background-color: #eebb99;
+    background-color:#EEBB99;
 }
+
 
 p.italic {
     font-style: italic;
@@ -50,6 +51,7 @@ text-align: left;
 	ridge #ff0066;
 	padding: 300px;
 	text-align: left;
+	background-color:#eebb99;
 	}
 footer
 {
