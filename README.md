@@ -1,4 +1,4 @@
-How to start Atlas Backup:
+####How to start Atlas Backup:
 
 1. Ensure python 2.7.x is installed
 https://www.python.org/downloads/release/python-2712/
@@ -17,7 +17,7 @@ On windows: click on main.py
 5. To exit, close the terminal window
 
 
-Enabling Recurring Backups:
+####Enabling Recurring Backups:
 Since the program can only backup when it is running,
 you may want to have this program start up automatically at startup.
 To do this on Windows:
@@ -28,7 +28,7 @@ To do this on Linux:
 https://stackoverflow.com/questions/12973777/how-to-run-a-shell-script-at-startup
 
 
-Code used:
+####Code used:
 
 Bottle Webserver
 http://bottlepy.org/docs/dev/
