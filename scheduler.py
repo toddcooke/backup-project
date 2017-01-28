@@ -155,8 +155,5 @@ def decrypt(key, string):
     decoded_string = "".join(decoded_chars)
     return decoded_string
 
-# if __name__ == '__main__':
-#     print encrypt('232', 'i am a string')
-#     print decrypt('232', 'm1OTn1OTUqampJygmQ==')
 # TODO implement encryption and compression
 # TODO create object which stores original path as well as current path
