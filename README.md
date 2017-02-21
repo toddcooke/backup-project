@@ -1,3 +1,13 @@
+#Atlas Backup
+
+Atlas Backup is a simple backup program intended for a single user 
+on a single computer. The project was created for Vermont Tech's Software Engineering 
+CIS 4150 class.
+
+ 
+![alt text](atlas_backup.png "Atlas Backup screenshot")
+
+
 ####How to start Atlas Backup:
 
 1. Ensure python 2.7.x is installed
@@ -30,7 +40,7 @@ https://stackoverflow.com/questions/12973777/how-to-run-a-shell-script-at-startu
 
 ####Code used:
 
-Bottle Webserver
+Bottle Web Framework
 http://bottlepy.org/docs/dev/
 
 de/encrypt source

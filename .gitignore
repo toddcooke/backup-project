@@ -9,3 +9,5 @@ out
 gen
 *.pyc
 *.db
+__pycache__/
+backup_repository/
