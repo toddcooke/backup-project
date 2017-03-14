@@ -8,22 +8,23 @@
 <form action="schedule_backup">
     <div class="form-group" id="date_picker">
         <p>What date should the first backup run?</p>
-        <input class="form-control" name="date" type="date" required="required" min="{{today}}" max="2100-01-01" title="First backup date">
+        <input class="form-control" name="date" type="date" required="required" min="{{today}}" max="2100-01-01"
+               title="First backup date" placeholder="mm/dd/yyyy">
     </div>
 
     <div class="form-group">
         <p>How many days between each backup?</p>
         <input class="form-control" name="offset" type="number" required="required" min="1" max="365"
-               title="days between each backup">
+               title="days between each backup" placeholder="1">
     </div>
 
     <div class="form-group">
-        <p>Enter path to file or directory to backup:</p>
-        <input class="form-control" name="file_path" type="text" title="file_path" required="required">
+        <p>Enter the absolute path to the file or directory to backup:</p>
+        <input class="form-control" name="file_path" type="text" title="file_path" required="required" placeholder="/home/todd">
     </div>
     <button type="submit" class="btn btn-primary" id="reg_bup_submit">Submit</button>
-	<br><br>
-	<a href="/">Return to Main Menu</a>
+    <br><br>
+    <a href="/">Return to Main Menu</a>
 </form>
 
 
