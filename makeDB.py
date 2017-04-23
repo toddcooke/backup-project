@@ -1,8 +1,14 @@
 import sqlite3
-from scheduler import db_backup_info, db_backup_schedule
+import os
+
+from scheduler import db_backup_info, db_backup_schedule, backup_repository
 
 
 def make_db():
+    # Make backup repository directory if it does not already exist
+    if not os.path.isdir(backup_repository):
+        os.mkdir(backup_repository)
+
     # Warning: This file is created in the current directory
     con = sqlite3.connect('backup_info.db')
 
